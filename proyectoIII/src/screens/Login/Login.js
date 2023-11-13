@@ -15,7 +15,7 @@ class Login extends Component {
     componentDidMount(){
         auth.onAuthStateChanged((user) => {
           if (user) {
-            this.props.navigation.navigate('Home')
+            this.props.navigation.navigate('Menu')
           }
         })
       }
@@ -23,13 +23,12 @@ class Login extends Component {
     login(email, pass){
         auth.signInWithEmailAndPassword(email, pass)
             .then((response) => {
-                //Cuando firebase responde sin error
-                console.log('Login ok', response);
+            
 
                 //Cambiar los estados a vacío como están al inicio.
 
                 //Redirigir al usuario a la home del sitio.
-                this.props.navigation.navigate('Home')
+                this.props.navigation.navigate('Menu')
             })
             .catch((error) => { 
                 if (error.code == 'auth/internal-error'){
@@ -49,7 +48,7 @@ class Login extends Component {
         return(
             <View style={styles.formContainer}>
 
-                <Text>Inicia sesión</Text>
+                <Text style={styles.title}>Inicia sesión</Text>
 
                 {/* Email */}
                 <TextInput
@@ -81,7 +80,7 @@ class Login extends Component {
                 
                 :
 
-                <TouchableOpacity onPress={()=> this.setState({textError: 'Es necesario completar todos los campos'})}>
+                <TouchableOpacity style={styles.button} onPress={()=> this.setState({textError: 'Es necesario completar todos los campos'})}>
                     <Text style={styles.textButton}>Iniciar sesión</Text>    
                 </TouchableOpacity>
                 }
@@ -90,14 +89,14 @@ class Login extends Component {
                 
                 ? 
                 
-                <Text>{this.state.textError}</Text> 
+                <Text style={styles.error}>{this.state.textError}</Text> 
                 
                 :
                 
                 false }
 
                 <TouchableOpacity onPress={() => this.props.navigation.navigate('Register')}>
-                   <Text>¿Todavía no tienes una cuenta? Registrate</Text>
+                   <Text style={styles.register}>¿Todavía no tienes una cuenta? Registrate</Text>
                 </TouchableOpacity>
             </View>
         )
@@ -107,31 +106,65 @@ class Login extends Component {
 
 const styles = StyleSheet.create({
     formContainer:{
+        backgroundColor: 'rgb(240, 228, 228)',
         paddingHorizontal:10,
-        marginTop: 20,
+        flex: 1, 
+    },
+    title: {
+        fontSize: 60,
+        fontWeight: 400,
+        color: 'rgb(135, 90, 97)',
+        display: 'flex',
+        justifyContent: 'center',
+        fontFamily: 'Nunito',
+        marginBottom: 15,
+        padding: 25
     },
     input:{
-        height:20,
-        paddingVertical:15,
-        paddingHorizontal: 10,
-        borderWidth:1,
+        color: '#666666',
+        height: 35,
+        paddingVertical: 20,
+        paddingHorizontal: 15,
+        borderWidth: 1,
         borderColor: '#ccc',
         borderStyle: 'solid',
         borderRadius: 6,
         marginVertical:10,
     },
     button:{
-        backgroundColor:'blue',
+        backgroundColor:'#d7bebe',
         paddingHorizontal: 10,
         paddingVertical: 6,
-        textAlign: 'center',
-        borderRadius:4,
+        marginTop: 20,
+        marginBottom: 20,
+        borderRadius: 4,
         borderWidth:1,
         borderStyle: 'solid',
-        borderColor: '#28a745'
+        borderColor: '#d7bebe',
+        height: 35,
+        display: 'flex',
+        justifyContent: 'center'
     },
     textButton:{
-        color: '#fff'
+        textAlign: 'center',
+        fontSize: 20,
+        color: 'rgb(94, 63, 67)',
+        fontFamily: 'Nunito'
+    },
+    error: {
+        color: 'rgb(209, 0, 0)',
+        fontSize: 15,
+        display: 'flex',
+        justifyContent: 'center',
+        fontFamily: 'Nunito',
+        marginBottom: 20
+    },
+    register: {
+        color: 'rgb(71, 68, 68)',
+        fontSize: 20,
+        display: 'flex',
+        justifyContent: 'center',
+        fontFamily: 'Nunito'
     }
 
 
