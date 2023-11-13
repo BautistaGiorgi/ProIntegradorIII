@@ -1,32 +1,40 @@
 import React, { Component } from 'react';
 import { Camera } from 'expo-camera';
 import { db, storage } from '../../firebase/config';
-import { TouchableOpacity, View, Text } from 'react-native';
+import { TouchableOpacity, View, Text, StyleSheet, Image } from 'react-native';
+import { auth } from '../../firebase/config';
 
 class Camera extends Component{
     constructor(props){
         super(props),
         this.state = {
-            permisosDeHardware: false,
-            urlInternaFoto: '',
-            mostrarLaCamara: true, //Para elegir si queremos mostrar cámara o preview de foto.
+            hardwarepermissions: false,
+            image: '',
+            showCamera: true, //Para elegir si queremos mostrar cámara o preview de foto.
         }
-       
-        this.metedosDeCamara = '' //Guardar los métodos internos de la cámara.
+        this.cameramethods = '' //Guardar los métodos internos de la cámara.
     }
 
     componentDidMount(){
         Camera.requestCameraPermissionsAsync()
-            .then( ()=>{
+            .then(()=>{
                 this.setState({
-                    permisosDeHardware: true,
+                    hardwarepermissions: true,
                 })
             })
-            .catch( e => console.log(e))
+            .catch(error => console.log(error))
     }
 
-    sacarFoto(){
+    takePicture(){
+        this.cameramethods.takePictureAsync()
 
+        .then(image => {
+            this.setState({
+                image: '',
+                showCamera: false
+            })
+        })
+        .catch(error => console.log(error))
     }
 
     guardarLaFotoEnStorage(){
@@ -51,3 +59,4 @@ class Camera extends Component{
 }
 
 export default Camera;
+

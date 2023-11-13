@@ -1,19 +1,28 @@
-import react, { Component } from 'react';
+import React, { Component } from 'react';
 import { auth } from '../../firebase/config';
 import { TextInput, TouchableOpacity, View, Text, StyleSheet } from 'react-native';
 
 class Login extends Component {
     constructor(){
-        super()
+        super();
         this.state={
             email:'',
-            password:''
+            password:'',
+            textError: ''
         }
     }
 
-    login (email, pass){
+    componentDidMount(){
+        auth.onAuthStateChanged((user) => {
+          if (user) {
+            this.props.navigation.navigate('Home')
+          }
+        })
+      }
+
+    login(email, pass){
         auth.signInWithEmailAndPassword(email, pass)
-            .then( response => {
+            .then((response) => {
                 //Cuando firebase responde sin error
                 console.log('Login ok', response);
 
@@ -21,38 +30,74 @@ class Login extends Component {
 
                 //Redirigir al usuario a la home del sitio.
                 this.props.navigation.navigate('Home')
-
             })
-            .catch( error => {
-                //Cuando Firebase responde con un error.
+            .catch((error) => { 
+                if (error.code == 'auth/internal-error'){
+                    this.setState({
+                      textError: 'Verifica tu email o contraseña'
+                    })
+                  }
+                  else {
+                  this.setState({
+                    textError: error.message
+                })}
                 console.log(error);
-            })
+             })
     }
 
     render(){
         return(
             <View style={styles.formContainer}>
-                <Text>Login</Text>
+
+                <Text>Inicia sesión</Text>
+
+                {/* Email */}
                 <TextInput
                     style={styles.input}
                     onChangeText={(text)=>this.setState({email: text})}
-                    placeholder='email'
+                    placeholder='Email'
                     keyboardType='email-address'
                     value={this.state.email}
-                    />
+                />
+
+                {/* Password */}
                 <TextInput
                     style={styles.input}
                     onChangeText={(text)=>this.setState({password: text})}
-                    placeholder='password'
+                    placeholder='Contraseña'
                     keyboardType='default'
                     secureTextEntry={true}
                     value={this.state.password}
                 />
-                <TouchableOpacity style={styles.button} onPress={()=>this.login(this.state.email, this.state.password)}>
-                    <Text style={styles.textButton}>Ingresar</Text>    
+
+                {this.state.email.length > 0 && this.state.password.length > 0 
+                
+                ? 
+
+                <TouchableOpacity style={styles.button} onPress={() => 
+                this.login(this.state.email, this.state.password)}>
+                    <Text style={styles.textButton}>Iniciar sesión</Text>
+                </TouchableOpacity> 
+                
+                :
+
+                <TouchableOpacity onPress={()=> this.setState({textError: 'Es necesario completar todos los campos'})}>
+                    <Text style={styles.textButton}>Iniciar sesión</Text>    
                 </TouchableOpacity>
-                <TouchableOpacity onPress={ () => this.props.navigation.navigate('Registro')}>
-                   <Text>No tengo cuenta. Registrarme.</Text>
+                }
+
+                {this.state.textError.length > 0 
+                
+                ? 
+                
+                <Text>{this.state.textError}</Text> 
+                
+                :
+                
+                false }
+
+                <TouchableOpacity onPress={() => this.props.navigation.navigate('Register')}>
+                   <Text>¿Todavía no tienes una cuenta? Registrate</Text>
                 </TouchableOpacity>
             </View>
         )

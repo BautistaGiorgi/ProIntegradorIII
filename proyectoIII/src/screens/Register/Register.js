@@ -1,24 +1,51 @@
 
 
-import react, { Component } from 'react';
-import { auth } from '../../firebase/config';
+import React, { Component } from 'react';
+import { auth, db } from '../../firebase/config';
 import {TextInput, TouchableOpacity, View, Text, StyleSheet} from 'react-native';
+import Camera from '../../components/Camera/Camera';
 
 class Register extends Component {
     constructor(){
         super()
         this.state={
             email:'',
+            password:'',
             userName:'',
-            password:''
+            miniBio: '',
+            profilePicture: '',
+            url: '',
+            showCamera: false,
+            textError: false,
         }
     }
-    register (email, pass){
+    register (email, pass, userName, miniBio, profilePicture){
+        /* Posibles errores */
+        if(this.state.email == '' || this.state.email.includes("@") == false){
+            return this.setState({textError: "El email ingresado es inválido"})
+
+        } else if (this.state.password == '' || this.state.password.length < 3){
+            return this.setState({textError: "La contraseña debe contener más de 3 caracteres"})
+
+        } else if (this.state.userName == '') {
+            return this.setState({textError:'Debes elegir un nombre de usuario'})
+        }
+
         auth.createUserWithEmailAndPassword(email, pass)
-            .then(()=>{
-                console.log('Registrado ok');
+            .then((response)=>{
+                console.log(response);
+                db.collection('user').add({
+                    owner: email,
+                    createdAt: Date.now(),
+                    userName: userName,
+                    miniBio: miniBio,
+                    profilePicture: profilePicture
+                })
             })
-            .catch( error => {
+            .catch((error) => {
+                this.setState({
+                    textError: error.message
+                })
                 console.log(error);
             })
     }
@@ -26,27 +53,87 @@ class Register extends Component {
     render(){
         return(
             <View style={styles.formContainer}>
-                <Text>Register</Text>
-                <TextInput
-                    style={styles.input}
-                    onChangeText={(text)=>this.setState({email: text})}
-                    placeholder='email'
-                    keyboardType='email-address'/>
-                <TextInput
-                    style={styles.input}
-                    onChangeText={(text)=>this.setState({userName: text})}
-                    placeholder='user name'
-                    keyboardType='default'/>
-                <TextInput
-                    style={styles.input}
-                    onChangeText={(text)=>this.setState({password: text})}
-                    placeholder='password'
-                    keyboardType='email-address'
-                    secureTextEntry={true}
-                />
-                <TouchableOpacity style={styles.button} onPress={()=>this.register(this.state.email, this.state.password)}>
-                    <Text style={styles.textButton}>Registrarse</Text>    
-                </TouchableOpacity>
+                {this.state.showCamera
+                ? <Camera onImageUpload={(url) => this.onImageUpload(url)}  />
+                
+                : <>
+                <Text>Registrarse</Text>
+                <View>
+                    {/* Email */}
+                    <TextInput
+                        style={styles.input}
+                        onChangeText={(text)=>this.setState({email: text})}
+                        placeholder='Email'
+                        keyboardType='email-address'
+                        value={this.state.email}
+                    />
+
+                    {/* User name */}
+                    <TextInput
+                        style={styles.input}
+                        onChangeText={(text)=>this.setState({userName: text})}
+                        placeholder='Nombre de usuario'
+                        keyboardType='default'
+                        value={this.state.userName}
+                    />
+
+                    {/* Password */}
+                    <TextInput
+                        style={styles.input}
+                        onChangeText={(text)=>this.setState({password: text})}
+                        placeholder='Contraseña'
+                        keyboardType='default'
+                        secureTextEntry={true}
+                        value={this.state.password}
+                    />
+
+                    {/* Mini bio */}
+                    <TextInput
+                        style={styles.input}
+                        onChangeText={(bio)=>this.setState({miniBio: bio})}
+                        placeholder='Descríbete'
+                        keyboardType='default'
+                        value={this.state.miniBio}
+                    />
+
+                    {/* Profile picture */}
+                    <TouchableOpacity onPress={()=> this.setState({showCamera: true})}>
+                        <Text>Añade una foto de perfil</Text>    
+                    </TouchableOpacity>
+
+                    {this.state.email.length > 0 && this.state.password.length > 0 && this.state.userName.length > 0 
+                    
+                    ? 
+
+                    <TouchableOpacity style={styles.button} onPress={() => 
+                    this.register(this.state.email, this.state.password, this.state.userName, this.state.miniBio, this.state.profilePicture)}>
+                        <Text style={styles.textButton}>Registrarme</Text>    
+                    </TouchableOpacity> 
+                    
+                    : 
+
+                    <TouchableOpacity onPress={()=> this.setState({textError: 'Es necesario completar todos los campos'})}>
+                        <Text >Registrarme</Text>    
+                    </TouchableOpacity> }
+
+                    {this.state.textError.length > 0 
+                    
+                    ? 
+                    
+                    <Text>{this.state.textError}</Text> 
+                   
+                    : 
+                    
+                    false }
+
+                    <TouchableOpacity onPress={ () => this.props.navigation.navigate('Login')}>
+                    <Text>¿Ya tienes una cuenta? Inicia sesión</Text>
+                    </TouchableOpacity>
+                    
+                </View>
+                </> 
+                }
+
             </View>
         )
     }
