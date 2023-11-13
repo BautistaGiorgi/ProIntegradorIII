@@ -3,7 +3,6 @@
 import React, { Component } from 'react';
 import { auth, db } from '../../firebase/config';
 import {TextInput, TouchableOpacity, View, Text, StyleSheet} from 'react-native';
-import Camera from '../../components/Camera/Camera';
 
 class Register extends Component {
     constructor(){
@@ -53,10 +52,7 @@ class Register extends Component {
     render(){
         return(
             <View style={styles.formContainer}>
-                {this.state.showCamera
-                ? <Camera onImageUpload={(url) => this.onImageUpload(url)}  />
-                
-                : <>
+               
                 <Text>Registrarse</Text>
                 <View>
                     {/* Email */}
@@ -107,13 +103,13 @@ class Register extends Component {
 
                     <TouchableOpacity style={styles.button} onPress={() => 
                     this.register(this.state.email, this.state.password, this.state.userName, this.state.miniBio, this.state.profilePicture)}>
-                        <Text style={styles.textButton}>Registrarme</Text>    
+                        <Text>Registrarme</Text>    
                     </TouchableOpacity> 
                     
                     : 
 
                     <TouchableOpacity onPress={()=> this.setState({textError: 'Es necesario completar todos los campos'})}>
-                        <Text >Registrarme</Text>    
+                        <Text>Registrarme</Text>    
                     </TouchableOpacity> }
 
                     {this.state.textError.length > 0 
@@ -131,8 +127,7 @@ class Register extends Component {
                     </TouchableOpacity>
                     
                 </View>
-                </> 
-                }
+
 
             </View>
         )

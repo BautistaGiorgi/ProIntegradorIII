@@ -1,16 +1,15 @@
 import React, { Component } from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { TextInput, TouchableOpacity, View, Text, StyleSheet, FlatList } from "react-native";
 import { Entypo } from '@expo/vector-icons'; 
 import { Octicons } from '@expo/vector-icons';
 import { Ionicons } from '@expo/vector-icons'; 
 import { FontAwesome } from '@expo/vector-icons';
 
-import Home from "../screens/Home/Home";
-import PostForm from "../screens/PostForm/PostForm";
-import Profile from "../screens/Profile/Profile";
-import ProfileUsers from "../screens/ProfileUsers/ProfileUsers";
-import Search from "../screens/Search/Search";
+import Home from '../../screens/Home/Home';
+import PostForm from '../../screens/PostForm/PostForm';
+import Profile from '../../screens/Profile/Profile';
+import ProfileUsers from '../../screens/ProfileUsers/ProfileUsers';
+import Search from '../../screens/Search/Search';
 
 const Tab = createBottomTabNavigator()
 

@@ -1,18 +1,18 @@
-import react, { Component } from 'react';
+import React, { Component } from 'react';
 import { db, auth } from '../../firebase/config';
 import { TextInput, TouchableOpacity, View, Text, StyleSheet } from 'react-native';
-import Camera from '../../components/Camera/Camera'
 
 class PostForm extends Component {
     constructor(){
         super()
         this.state={
            textoPost:'',
+           url:'',
+           showCamera: true
         }
     }
 
-    //1)Completar la creación de posts
-    crearPost(owner, textoPost, createdAt){
+    createPost(owner, textoPost, createdAt){
         //Crear la colección Users
         db.collection('posts').add({
             owner: owner, //auth.currentUser.email,
@@ -26,7 +26,7 @@ class PostForm extends Component {
     render(){
         return(
             <View style={styles.formContainer}>
-                <Camera/>
+               
                 <Text>New Post</Text>
                 <TextInput
                     style={styles.input}
@@ -35,7 +35,7 @@ class PostForm extends Component {
                     keyboardType='default'
                     value={this.state.textoPost}
                 />
-                <TouchableOpacity style={styles.button} onPress={()=>this.crearPost(auth.currentUser.email, this.state.textoPost, Date.now())}>
+                <TouchableOpacity style={styles.button} onPress={()=>this.createPost(auth.currentUser.email, this.state.textoPost, Date.now())}>
                     <Text style={styles.textButton}>Postear</Text>    
                 </TouchableOpacity>
             </View>
