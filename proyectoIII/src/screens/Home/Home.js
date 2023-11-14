@@ -4,18 +4,18 @@ import { auth, db } from '../../firebase/config';
 import Post from '../../components/Post/Post';
 
 class Home extends Component {
-    constructor(){
+    constructor() {
         super()
-        this.state={
+        this.state = {
             arrayPost: []
         }
     }
 
-    componentDidMount(){
+    componentDidMount() {
         db.collection('posts').orderBy('createdAt', 'desc').onSnapshot(
             post => {
                 let postsShow = [];
-                post.forEach( onePost => {
+                post.forEach(onePost => {
                     postsShow.push(
                         {
                             id: onePost.id,
@@ -30,30 +30,27 @@ class Home extends Component {
         )
     }
 
-    render(){
-        return(
+    render() {
+        return (
             <View style={styles.formContainer}>
-                <Image 
-                style={styles.image} 
-                source={require('../../../assets/albas.png')}
-                resizeMode='contain'/> 
+                <Image
+                    style={styles.image}
+                    source={require('../../../assets/albas.png')}
+                    resizeMode='contain' />
                 {
                     this.state.arrayPost.length == 0
 
-                    ? 
-                    
-                    <Image 
-                    style={styles.loader} 
-                    source={require('../../../assets/loader.gif')}
-                    resizeMode='contain'/>
+                        ?
 
-                    : 
-                    
-                    <FlatList
-                        data= {this.state.arrayPost}
-                        keyExtractor={(onePost) => onePost.id }
-                        renderItem={({item}) => <Post dataPost={item} navigation={this.props.navigation}/>}
-                    />
+                        <ActivityIndicator size='large' color='violet' />
+
+                        :
+
+                        <FlatList
+                            data={this.state.arrayPost}
+                            keyExtractor={(onePost) => onePost.id}
+                            renderItem={({ item }) => <Post dataPost={item} navigation={this.props.navigation} />}
+                        />
                 }
             </View>
         )
@@ -61,18 +58,15 @@ class Home extends Component {
 }
 
 const styles = StyleSheet.create({
-    formContainer:{
+    formContainer: {
         backgroundColor: 'rgb(240, 228, 228)',
-        paddingHorizontal:10,
-        flex: 1, 
+        paddingHorizontal: 10,
+        flex: 1,
     },
     image: {
         height: 60,
         marginTop: 10
     },
-    loader: {
-        height: 60,
-    }
-  })
+})
 
 export default Home;

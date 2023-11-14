@@ -91,11 +91,7 @@ class MyCamera extends Component{
                     </View>
                 
                 :
-
-                    <Image 
-                    style={styles.loader} 
-                    source={require('../../../assets/loader.gif')}
-                    resizeMode='contain'/>
+                <ActivityIndicator size='large' color='#8000FF' />
                 }
             </>
         )
@@ -148,9 +144,6 @@ const styles = StyleSheet.create({
     buttonContainer: {
         flexDirection: 'row'
        
-    },
-    loader: {
-        height: 60
     },
   })
 
