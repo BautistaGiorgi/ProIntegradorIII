@@ -76,7 +76,7 @@ class Login extends Component {
                 
                 :
 
-                <TouchableOpacity style={styles.button} onPress={()=> this.setState({textError: 'Es necesario completar todos los campos'})}>
+                <TouchableOpacity style={styles.button} onPress={() => this.setState({textError: 'Es necesario completar todos los campos'})}>
                     <Text style={styles.textButton}>Iniciar sesión</Text>    
                 </TouchableOpacity>
                 }

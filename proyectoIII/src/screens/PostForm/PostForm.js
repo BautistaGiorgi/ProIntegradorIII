@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { db, auth } from '../../firebase/config';
 import { TextInput, TouchableOpacity, View, Text, StyleSheet } from 'react-native';
+import MyCamera from '../../components/MyCamera/MyCamera';
 
 class PostForm extends Component {
     constructor(props) {
@@ -56,20 +57,35 @@ class PostForm extends Component {
         this.setState({ url: url, showCamera: false });
     }
 
-    render() {
-        return (
+    render(){
+        return(
             <View style={styles.formContainer}>
+
+            {this.state.showCamera 
+
+            ?
+
+            <MyCamera onImageUpload={(url) => this.onImageUpload(url)} />
+
+            :
+            
+            <React.Fragment>
                 <Text style={styles.title}>Nuevo Posteo</Text>
-                <TextInput
-                    style={styles.input}
-                    onChangeText={(text) => this.setState({post: text })}
-                    placeholder='Breve descripción'
-                    keyboardType='default'
-                    value={this.state.post}
-                />
-                <TouchableOpacity style={styles.button} onPress={() => {this.createPost(), this.props.navigation.navigate('Home')}}>
-                    <Text style={styles.textButton}>Postear</Text>
-                </TouchableOpacity>    
+                    <TextInput
+                        style={styles.input}
+                        onChangeText={(text) => this.setState({post: text })}
+                        placeholder='Breve descripción'
+                        keyboardType='default'
+                        value={this.state.post}
+                    />
+
+                    <TouchableOpacity style={styles.button} onPress={() => {this.createPost(), this.props.navigation.navigate('Home')}}>
+                        <Text style={styles.textButton}>Postear</Text>
+                    </TouchableOpacity>  
+            </React.Fragment>
+
+            }
+
             </View>
         )
     }
