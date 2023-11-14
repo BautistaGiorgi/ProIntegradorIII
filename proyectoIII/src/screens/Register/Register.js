@@ -141,13 +141,14 @@ const styles = StyleSheet.create({
         flex: 1, 
     },
     title: {
-        fontSize: 60,
+        fontSize: 40,
         fontWeight: 400,
         color: 'rgb(135, 90, 97)',
         display: 'flex',
         justifyContent: 'center',
         fontFamily: 'Nunito',
         marginBottom: 15,
+        marginTop: 20,
         padding: 25
     },
     input:{
@@ -191,7 +192,7 @@ const styles = StyleSheet.create({
     },
     login: {
         color: 'rgb(71, 68, 68)',
-        fontSize: 20,
+        fontSize: 17,
         display: 'flex',
         justifyContent: 'center',
         fontFamily: 'Nunito'

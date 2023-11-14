@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { Text, View, TouchableOpacity, StyleSheet, FlatList } from 'react-native';
-
-import { db } from '../firebase/config'
+import { db } from '../../firebase/config';
 
 class FormProfile extends Component {
     constructor(props) {

@@ -11,18 +11,17 @@ class Home extends Component {
     }
 
     componentDidMount(){
-        db.collection('posts').orderBy('createdAt' , 'desc').onSnapshot(
+        db.collection('posts').orderBy('createdAt', 'desc').onSnapshot(
             post => {
                 let postsShow = [];
-                post.forEach( unPost => {
+                post.forEach( onePost => {
                     postsShow.push(
                         {
-                            id: unPost.id,
-                            datos: unPost.data()
+                            id: onePost.id,
+                            data: onePost.data()
                         }
                     )
                 })
-    
                 this.setState({
                     arrayPost: postsShow
                 })
@@ -32,7 +31,7 @@ class Home extends Component {
 
     render(){
         return(
-            <View style={styles.container}>
+            <View style={styles.formContainer}>
                 {
                     this.state.arrayPost.length == 0
                     ? <Text>
@@ -41,7 +40,7 @@ class Home extends Component {
 
                     : <FlatList
                         data= {this.state.arrayPost}
-                        keyExtractor={ unPost => unPost.id }
+                        keyExtractor={ onePost => onePost.id }
                         renderItem={({item}) => <Post infoPost = {item} navigation={this.props.navigation}/>}
                     />
                 }
@@ -49,5 +48,13 @@ class Home extends Component {
         )
     }
 }
+
+const styles = StyleSheet.create({
+    formContainer:{
+        backgroundColor: 'rgb(240, 228, 228)',
+        paddingHorizontal:10,
+        flex: 1, 
+    },
+  })
 
 export default Home;

@@ -1,9 +1,7 @@
-import React, { Component } from 'react'
-import {Text, View, TouchableOpacity, StyleSheet} from 'react-native'
-
-import { auth } from '../firebase/config'
-
-import FormProfile from '../components/FormProfile'
+import React, { Component } from 'react';
+import {Text, View, TouchableOpacity, StyleSheet} from 'react-native';
+import { auth } from '../../firebase/config';
+import FormProfile from '../../components/FormProfile/FormProfile';
 
 export default class Profile extends Component {
   constructor(props) {
