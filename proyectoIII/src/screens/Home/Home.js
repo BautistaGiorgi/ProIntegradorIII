@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { TextInput, TouchableOpacity, View, Text, StyleSheet, FlatList } from 'react-native';
 import { auth, db } from '../../firebase/config';
+import Post from '../../components/Post/Post';
 
 class Home extends Component {
     constructor(){
@@ -34,14 +35,16 @@ class Home extends Component {
             <View style={styles.formContainer}>
                 {
                     this.state.arrayPost.length == 0
-                    ? <Text>
-                        Cargando
-                    </Text>
 
-                    : <FlatList
+                    ? 
+                    <Text>Cargando</Text>
+
+                    : 
+                    
+                    <FlatList
                         data= {this.state.arrayPost}
-                        keyExtractor={ onePost => onePost.id }
-                        renderItem={({item}) => <Post infoPost = {item} navigation={this.props.navigation}/>}
+                        keyExtractor={(onePost) => onePost.id }
+                        renderItem={({item}) => <Post dataPost={item} navigation={this.props.navigation}/>}
                     />
                 }
             </View>

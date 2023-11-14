@@ -1,33 +1,56 @@
-import react, { Component } from 'react';
+import React, { Component } from 'react';
 import { db, auth } from '../../firebase/config';
 import { TextInput, TouchableOpacity, View, Text, StyleSheet } from 'react-native';
-import Camera from '../../components/Camera/Camera';
 
 class PostForm extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            postUrl: '',
+            post: '',
             description: '',
             url: '',
+            user: '',
             showCamera: true
         }
     }
+    
+    componentDidMount(){
+        db.collection('user').where("owner", "==", auth.currentUser.email).onSnapshot(
+          data => {
+            let info = [];
+            data.forEach(i => {
+              info.push(
+                {
+                  id: i.id,
+                  data: i.data()
+                })
+            })
+            this.setState({
+              user: info
+            })
+          }
+        )
+    }
 
-    createPost(owner, postUrl, createdAt) {
+    createPost(owner, post, createdAt) {
         db.collection('posts').add({
             owner: auth.currentUser.email,
-            userName: auth.currentUser.userName,
-            postUrl: this.state.postUrl,
+            userName: this.state.user[0].data.userName,
+            post: this.state.post,
+            image: this.state.url,
             createdAt: Date.now(),
             description: this.state.description,
             likes: [],
             comments: []
         })
-            .then(
-                this.props.navigation.navigate("Home")
+            .then( 
+                this.setState ({ 
+                post: '',
+                showCamera: true,
+                url: ''
+            })
             )
-            .catch(e => console.log(e))
+            .catch(error => console.log(error))
     }
     onImageUpload(url) {
         this.setState({ url: url, showCamera: false });
@@ -35,23 +58,18 @@ class PostForm extends Component {
 
     render() {
         return (
-            <View>
-
-                {this.state.showCamera ? <Camera onImageUpload={(url) => this.onImageUpload(url)} /> :
-                    <>
-                        <Text>Nuevo Posteo</Text>
-                        <TextInput
-                            style={styles.input}
-                            onChangeText={(text) => this.setState({ postUrl: text })}
-                            placeholder='Escribir...'
-                            keyboardType='default'
-                            value={this.state.postUrl}
-                        />
-                        <TouchableOpacity style={styles.button} onPress={() => this.createPost(auth.currentUser.email, this.state.postUrl, Date.now())}>
-                            <Text style={styles.textButton}>Postear</Text>
-                        </TouchableOpacity>
-
-                    </>}
+            <View style={styles.formContainer}>
+                <Text style={styles.title}>Nuevo Posteo</Text>
+                <TextInput
+                    style={styles.input}
+                    onChangeText={(text) => this.setState({post: text })}
+                    placeholder='Breve descripción'
+                    keyboardType='default'
+                    value={this.state.post}
+                />
+                <TouchableOpacity style={styles.button} onPress={() => {this.createPost(), this.props.navigation.navigate('Home')}}>
+                    <Text style={styles.textButton}>Postear</Text>
+                </TouchableOpacity>    
             </View>
         )
     }
@@ -60,31 +78,51 @@ class PostForm extends Component {
 
 const styles = StyleSheet.create({
     formContainer: {
-        paddingHorizontal: 10,
+        backgroundColor: 'rgb(240, 228, 228)',
+        paddingHorizontal:10,
+        flex: 1, 
+    },
+    title: {
+        fontSize: 40,
+        fontWeight: 400,
+        color: 'rgb(135, 90, 97)',
+        display: 'flex',
+        justifyContent: 'center',
+        fontFamily: 'Nunito',
+        marginBottom: 15,
         marginTop: 20,
+        padding: 25
     },
     input: {
-        height: 20,
-        paddingVertical: 15,
-        paddingHorizontal: 10,
+        color: '#666666',
+        height: 35,
+        paddingVertical: 20,
+        paddingHorizontal: 15,
         borderWidth: 1,
         borderColor: '#ccc',
         borderStyle: 'solid',
         borderRadius: 6,
-        marginVertical: 10,
+        marginVertical:10,
     },
     button: {
-        backgroundColor: '#28a745',
+        backgroundColor:'#d7bebe',
         paddingHorizontal: 10,
         paddingVertical: 6,
-        textAlign: 'center',
+        marginTop: 20,
+        marginBottom: 20,
         borderRadius: 4,
-        borderWidth: 1,
+        borderWidth:1,
         borderStyle: 'solid',
-        borderColor: '#28a745'
+        borderColor: '#d7bebe',
+        height: 35,
+        display: 'flex',
+        justifyContent: 'center'
     },
     textButton: {
-        color: '#fff'
+        textAlign: 'center',
+        fontSize: 20,
+        color: 'rgb(94, 63, 67)',
+        fontFamily: 'Nunito'
     }
 })
 

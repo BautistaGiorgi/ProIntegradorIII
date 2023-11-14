@@ -21,44 +21,53 @@ export default class Profile extends Component {
 
   render() {
     return (
-      <View style={styles.container}>
-        <Text style={styles.title}>Profile</Text>
-        
+      <View style={styles.formContainer}>
         <FormProfile userEmail={auth.currentUser.email} navigation={this.props.navigation} />
         
-        <TouchableOpacity style={styles.logoutButton} onPress={() => this.logOut()}>
-          <Text style={styles.logoutButtonText}>Logout</Text>
+        <TouchableOpacity style={styles.button} onPress={() => this.logOut()}>
+          <Text style={styles.textButton}>Logout</Text>
         </TouchableOpacity>
       </View>
-    );
+    )
   }
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    // justifyContent: 'center',
-    // alignItems: 'center',
-    padding: 20,
-    backgroundColor: '#282c34', 
+  formContainer: {
+        backgroundColor: 'rgb(240, 228, 228)',
+        paddingHorizontal:10,
+        flex: 1,  
   },
   title: {
-    fontSize: 25,
-    fontWeight: 'bold',
-    marginBottom: 20,
-    marginTop: 40,
-    marginLeft: 130, 
-    color: '#61dafb',
+      fontSize: 40,
+      fontWeight: 400,
+      color: 'rgb(135, 90, 97)',
+      display: 'flex',
+      justifyContent: 'center',
+      fontFamily: 'Nunito',
+      marginBottom: 15,
+      marginTop: 20,
+      padding: 25
    },
-  logoutButton: {
-    backgroundColor: '#61dafb',
-    padding: 15,
-    borderRadius: 5,
-    alignItems: 'center',
+   button:{
+    backgroundColor:'#d7bebe',
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    marginTop: 20,
+    marginBottom: 20,
+    borderRadius: 4,
+    borderWidth:1,
+    borderStyle: 'solid',
+    borderColor: '#d7bebe',
+    height: 35,
+    display: 'flex',
+    justifyContent: 'center'
   },
-  logoutButtonText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: 'bold',
+  textButton:{
+      textAlign: 'center',
+      fontSize: 20,
+      color: 'rgb(94, 63, 67)',
+      fontFamily: 'Nunito'
   },
+  
 });

@@ -1,78 +1,90 @@
 import React, { Component } from 'react';
-import { Text, View, StyleSheet, TouchableOpacity} from 'react-native';
+import { Text, View, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import { db, auth } from '../../firebase/config';
 import firebase from 'firebase';
-
+import { FontAwesome } from '@expo/vector-icons';
 
 class Post extends Component {
-
-
     constructor(props){
-        super(props);
-
-
+        super(props)
         this.state = {
-            like: false,
-            cantidadDeLikes: this.props.dataPost.datos.likes.length
+            like: false
         }
     }
     
     componentDidMount(){
-        //Chequear apenas carga si el post está o no likeado
-        if(this.props.dataPost.datos.likes.includes(auth.currentUser.email)){
+        let  likes = this.props.dataPost.data.likes.length
+
+        if(likes.length == 0){
             this.setState({
-                like:true
+                like: false
             })
         }
-       
+        if(likes.length > 0){
+            likes.forEach(like => {if (like === auth.currentUser.email) {
+                this.setState({
+                    like: true 
+                })
+            }})
+        }
     }
 
-    //Necesitamos en FB que cada Post tenga una propiedad con un array de emails
-
     likear(){
-        //Agrega un email en la propiedad like del post.
         db.collection('posts').doc(this.props.dataPost.id).update({
             likes:firebase.firestore.FieldValue.arrayUnion(auth.currentUser.email)
         })
-        .then( res => this.setState({
+        .then(this.setState({
             like: true,
-            cantidadDeLikes: this.props.dataPost.datos.likes.length
-        })
-        )
-        .catch( e => console.log(e))
+            likes: this.props.dataPost.data.likes.length
+        }))
+        .catch(error => console.log(error))
     }
 
-    unlike(){
-        //Quita un email en la propiedad like del post.
+    dislike(){
         db.collection('posts').doc(this.props.dataPost.id).update({
             likes:firebase.firestore.FieldValue.arrayRemove(auth.currentUser.email)
         })
-        .then( res => this.setState({
+        .then(this.setState({
             like: false,
-            cantidadDeLikes: this.props.dataPost.datos.likes.length
-        })
-        )
-        .catch( e => console.log(e))
+            likes: this.props.dataPost.data.likes.length
+        }))
+        .catch(error => console.log(error))
     }
 
     render(){
-        console.log(this.props)
-        return (
-            <View>
-                <Text>{ this.props.dataPost.datos.owner }</Text>
-                <Text>{ this.props.dataPost.datos.textoPost }</Text>
-                <Text>Cantidad de Likes:{ this.state.cantidadDeLikes }</Text>
-                {
-                    this.state.like ?
-                        <TouchableOpacity style={styles.button} onPress={()=>this.unlike()}>
-                            <Text style={styles.textButton}>unLike</Text>    
-                        </TouchableOpacity>
+        return(
+            <View style={styles.formContainer}>
+                {/* Perfil del usuario */}
+                <TouchableOpacity onPress={() => this.props.navigation.navigate('ProfileUsers', this.props.dataPost.data.owner)} style={styles.container}>
+                    <Image source={{uri:'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png'}} resizeMode='contain'/> 
+                    <Text style={styles.userName}>{this.props.dataPost.data.userName}</Text>
+                </TouchableOpacity>
+                
+                {/* Post */}
+                <Image source={{uri:this.props.dataPost.data.photo}}/>
+                <Text style={styles.description}>{this.props.dataPost.data.post}</Text>
+              
+                {/* Likes */}
+                {this.state.like 
+                
+                ? 
 
-                        :
+                <TouchableOpacity style={styles.button} onPress={() => this.dislike()}>
+                    <View style={styles.iconContainer}>
+                        <FontAwesome name='heart' size={18} color='red'/>
+                        <Text style={styles.textButton}>{this.props.dataPost.data.likes.length}</Text>
+                    </View>
+                </TouchableOpacity>
 
-                        <TouchableOpacity style={styles.button} onPress={()=> this.likear()} >
-                            <Text style={styles.textButton}>Likear</Text>    
-                        </TouchableOpacity>
+                :
+
+                <TouchableOpacity style={styles.button} onPress={()=>this.likear()}>
+                    <View style={styles.iconContainer}>
+                        <FontAwesome name='heart-o' size={18}/>
+                        <Text style={styles.textButton}>{this.props.dataPost.data.likes.length}</Text>
+                    </View>
+                </TouchableOpacity>
+
                 }
             </View>
         )
@@ -81,31 +93,56 @@ class Post extends Component {
 
 const styles = StyleSheet.create({
     formContainer:{
+        backgroundColor: 'rgb(240, 228, 228)',
         paddingHorizontal:10,
-        marginTop: 20,
+        flex: 1, 
     },
     input:{
-        height:20,
-        paddingVertical:15,
-        paddingHorizontal: 10,
-        borderWidth:1,
+        color: '#666666',
+        height: 35,
+        paddingVertical: 20,
+        paddingHorizontal: 15,
+        borderWidth: 1,
         borderColor: '#ccc',
         borderStyle: 'solid',
         borderRadius: 6,
         marginVertical:10,
     },
+    userName:{
+        fontSize: 20,
+        color: 'rgb(94, 63, 67)',
+        fontFamily: 'Nunito',
+    },
     button:{
-        backgroundColor:'orange',
+        backgroundColor:'#d7bebe',
         paddingHorizontal: 10,
         paddingVertical: 6,
-        textAlign: 'center',
-        borderRadius:4,
+        marginTop: 20,
+        marginBottom: 20,
+        borderRadius: 4,
         borderWidth:1,
         borderStyle: 'solid',
-        borderColor: 'orange'
+        borderColor: '#d7bebe',
+        height: 35,
+        width: 62,
+        display: 'flex',
+        justifyContent: 'center'
     },
     textButton:{
-        color: '#fff'
+        textAlign: 'center',
+        fontSize: 18,
+        color: 'rgb(94, 63, 67)',
+        fontFamily: 'Nunito',
+        marginLeft: 10
+    },
+    iconContainer: {
+        flexDirection: 'row', 
+        alignItems: 'center', 
+    },
+    description:{
+        fontSize: 14,
+        color: 'gray',
+        fontFamily: 'Nunito',
     }
 })
 

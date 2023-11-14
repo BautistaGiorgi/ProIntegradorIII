@@ -81,13 +81,11 @@ const styles = StyleSheet.create({
     paddingTop:10,
     fontSize: 16,
     fontWeight: 'bold',
-    color: 'white',
   },
   userData: {
     fontSize: 16,
     marginBottom: 10,
     fontWeight: '400',
-    color: 'white',
   },
   postContainer: {
     marginBottom: 20,
