@@ -1,12 +1,10 @@
-
-
 import React, { Component } from 'react';
 import { auth, db } from '../../firebase/config';
 import {TextInput, TouchableOpacity, View, Text, StyleSheet} from 'react-native';
 
 class Register extends Component {
-    constructor(){
-        super()
+    constructor(props){
+        super(props)
         this.state={
             email:'',
             password:'',
@@ -39,7 +37,8 @@ class Register extends Component {
                     userName: userName,
                     miniBio: miniBio,
                     profilePicture: profilePicture
-                })
+                });
+                this.props.navigation.navigate("Login");
             })
             .catch((error) => {
                 this.setState({
