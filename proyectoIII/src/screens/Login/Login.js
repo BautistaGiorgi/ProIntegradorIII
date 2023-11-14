@@ -29,14 +29,13 @@ class Login extends Component {
             .catch((error) => {
                 if (error.code == 'auth/internal-error') {
                     this.setState({
-                        textError: 'Verifica tu email o contraseña'
+                      textError: 'Verifica tu email o contraseña'
                     })
-                }
-                else {
-                    this.setState({
-                        textError: error.message
-                    })
-                }
+                  }
+                  else {
+                  this.setState({
+                    textError: error.message
+                })}
                 console.log(error);
             })
     }

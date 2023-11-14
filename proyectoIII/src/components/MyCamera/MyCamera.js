@@ -18,12 +18,13 @@ class MyCamera extends Component{
         .then((res) => {
         if (res.granted === true)
             this.setState({
-                permission: true,
+                permission: true
             })
         })
         .catch(error => console.log(error))          
     }
       
+    
     takePicture(){
         this.metodosCamara.takePictureAsync()
         .then((image) => {
@@ -58,9 +59,9 @@ class MyCamera extends Component{
     }
 
     render(){
-        return(
+        return(   
             <>
-                {this.state.permission 
+                {this.state.permission
                 
                 ? 
                 
@@ -68,36 +69,33 @@ class MyCamera extends Component{
                 
                 ?
 
-                <View style={styles.container} >
-                    <Camera style={styles.camera} type={Camera.Constants.Type.front} ref={metodosCamara => this.metodosCamara = metodosCamara}/>
-                    <View>
+                    <View style={styles.formContainer}>
+                        <Camera style={styles.camera} type={Camera.Constants.Type.front} ref={metodosCamara => this.metodosCamara = metodosCamara}/>
                         <TouchableOpacity style={styles.button} onPress={() => this.takePicture()}>
                             <Text style={styles.textButton}>Take Picture</Text>
                         </TouchableOpacity>
                     </View>
-                </View>
-
+               
                 :
 
-                <View style={styles.formContainer}>
-                    <Image style={styles.camera} source={{uri: this.state.image}} />
-                    <TouchableOpacity
-                        style={styles.button}
-                        onPress={() => this.acceptPicture()}
-                        >
-                        <Text style={styles.textButton}>Accept</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                        style={styles.button}
-                        onPress={() => this.cancelPicture()}
-                        >
-                        <Text style={styles.textButton}>Cancel</Text>
-                    </TouchableOpacity>
-                </View>
-
+                    <View style={styles.formContainer}>
+                        <Image style={styles.camera} source={{uri: this.state.image}}/>
+                        <View style={styles.buttonContainer}>
+                            <TouchableOpacity style={styles.buttonOk} onPress={() => this.acceptPicture()}>
+                                <Text style={styles.textButton}>Accept</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity style={styles.buttonOk} onPress={() => this.cancelPicture()}>
+                                <Text style={styles.textButton}>Cancel</Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                
                 :
 
-                <Text style={styles.error}>No me diste los permisos de la camara</Text>
+                    <Image 
+                    style={styles.loader} 
+                    source={require('../../../assets/loader.gif')}
+                    resizeMode='contain'/>
                 }
             </>
         )
@@ -106,38 +104,53 @@ class MyCamera extends Component{
 
 const styles = StyleSheet.create({
     formContainer: {
-        flex:1,
+        flex: 1, 
+    },
+    camera:{
+        height: 453,
+        marginTop: 20
     },
     title:{
       fontWeight: 'bold'
     },
-    camera: {
-        height: 400
-    },
     button: {
-      flex:1,
-      width:150,
-      height:10,
-      alignItems: 'center',
-      backgroundColor: "blue",
-      paddingHorizontal: 10,
-      paddingVertical: 6,
-      borderRadius: 4,
-      borderWidth: 1,
-      borderStyle: "solid",
-      borderColor: "#28a745",
+        backgroundColor:'#d7bebe',
+        paddingHorizontal: 10,
+        paddingVertical: 6,
+        marginTop: 20,
+        marginBottom: 20,
+        borderRadius: 4,
+        borderWidth:1,
+        borderStyle: 'solid',
+        borderColor: '#d7bebe',
+        height: 35,
     },
-    
     textButton: {
-      color: "#fff",
+        textAlign: 'center',
+        fontSize: 20,
+        color: 'rgb(94, 63, 67)',
+        fontFamily: 'Nunito'
     },
-    error: {
-        color: 'rgb(209, 0, 0)',
-        fontSize: 15,
-        display: 'flex',
-        justifyContent: 'center',
-        fontFamily: 'Nunito',
-        marginBottom: 20
+    buttonOk: {
+        backgroundColor:'#d7bebe',
+        paddingHorizontal: 10,
+        paddingVertical: 6,
+        marginTop: 20,
+        marginBottom: 20,
+        marginLeft: 32,
+        borderRadius: 4,
+        borderWidth:1,
+        borderStyle: 'solid',
+        borderColor: '#d7bebe',
+        height: 35,
+        width: 130
+    },
+    buttonContainer: {
+        flexDirection: 'row'
+       
+    },
+    loader: {
+        height: 60
     },
   })
 

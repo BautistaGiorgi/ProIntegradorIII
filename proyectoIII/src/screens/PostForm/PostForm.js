@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { db, auth } from '../../firebase/config';
-import { TextInput, TouchableOpacity, View, Text, StyleSheet } from 'react-native';
+import { TextInput, TouchableOpacity, View, Text, StyleSheet, Image } from 'react-native';
 import MyCamera from '../../components/MyCamera/MyCamera';
 
 class PostForm extends Component {
@@ -60,6 +60,10 @@ class PostForm extends Component {
     render(){
         return(
             <View style={styles.formContainer}>
+                <Image 
+                style={styles.image} 
+                source={require('../../../assets/albas.png')}
+                resizeMode='contain'/> 
 
             {this.state.showCamera 
 
@@ -139,7 +143,11 @@ const styles = StyleSheet.create({
         fontSize: 20,
         color: 'rgb(94, 63, 67)',
         fontFamily: 'Nunito'
-    }
+    },
+    image: {
+        height: 60,
+        marginTop: 10
+    },
 })
 
 export default PostForm;

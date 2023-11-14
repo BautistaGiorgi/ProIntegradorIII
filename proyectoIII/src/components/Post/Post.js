@@ -61,8 +61,8 @@ class Post extends Component {
                 </TouchableOpacity>
                 
                 {/* Post */}
-                <Image source={{uri:this.props.dataPost.data.photo}}/>
-                <Text style={styles.description}>{this.props.dataPost.data.post}</Text>
+                <Image style={styles.camera} source={{uri:this.props.dataPost.data.image}}/>
+                <Text style={styles.description}>{this.props.dataPost.data.userName} {this.props.dataPost.data.post}</Text>
               
                 {/* Likes */}
                 {this.state.like 
@@ -94,7 +94,6 @@ class Post extends Component {
 const styles = StyleSheet.create({
     formContainer:{
         backgroundColor: 'rgb(240, 228, 228)',
-        paddingHorizontal:10,
         flex: 1, 
     },
     input:{
@@ -143,7 +142,13 @@ const styles = StyleSheet.create({
         fontSize: 14,
         color: 'gray',
         fontFamily: 'Nunito',
-    }
+    },
+    camera: {
+        width: "200",
+        height: '200%',
+        marginTop: 20,
+        marginBottom:20
+    },
 })
 
 export default Post;

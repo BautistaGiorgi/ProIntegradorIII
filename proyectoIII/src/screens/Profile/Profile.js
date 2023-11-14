@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {Text, View, TouchableOpacity, StyleSheet} from 'react-native';
+import {Text, View, TouchableOpacity, StyleSheet, Image} from 'react-native';
 import { auth } from '../../firebase/config';
 import FormProfile from '../../components/FormProfile/FormProfile';
 
@@ -22,6 +22,11 @@ export default class Profile extends Component {
   render() {
     return (
       <View style={styles.formContainer}>
+        <Image 
+                style={styles.image} 
+                source={require('../../../assets/albas.png')}
+                resizeMode='contain'/> 
+
         <FormProfile userEmail={auth.currentUser.email} navigation={this.props.navigation} />
         
         <TouchableOpacity style={styles.button} onPress={() => this.logOut()}>
@@ -68,6 +73,10 @@ const styles = StyleSheet.create({
       fontSize: 20,
       color: 'rgb(94, 63, 67)',
       fontFamily: 'Nunito'
+  },
+  image: {
+      height: 60,
+      marginTop: 10
   },
   
 });

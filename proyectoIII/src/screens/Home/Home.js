@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { TextInput, TouchableOpacity, View, Text, StyleSheet, FlatList } from 'react-native';
+import { TextInput, TouchableOpacity, View, Text, StyleSheet, FlatList, Image } from 'react-native';
 import { auth, db } from '../../firebase/config';
 import Post from '../../components/Post/Post';
 
@@ -33,11 +33,19 @@ class Home extends Component {
     render(){
         return(
             <View style={styles.formContainer}>
+                <Image 
+                style={styles.image} 
+                source={require('../../../assets/albas.png')}
+                resizeMode='contain'/> 
                 {
                     this.state.arrayPost.length == 0
 
                     ? 
-                    <Text>Cargando</Text>
+                    
+                    <Image 
+                    style={styles.loader} 
+                    source={require('../../../assets/loader.gif')}
+                    resizeMode='contain'/>
 
                     : 
                     
@@ -58,6 +66,13 @@ const styles = StyleSheet.create({
         paddingHorizontal:10,
         flex: 1, 
     },
+    image: {
+        height: 60,
+        marginTop: 10
+    },
+    loader: {
+        height: 60,
+    }
   })
 
 export default Home;

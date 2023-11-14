@@ -49,18 +49,21 @@ class FormProfile extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <Text style={styles.label} > Email: </Text>
+        <View>
+          
+         
+        </View>
         <Text style={styles.userData}>{this.props.userEmail}</Text>
 
         {this.state.userData ? (
           <View style={styles.userInfoContainer}>
-            <Text style={styles.label}>Nombre de usuario:</Text>
+
             <Text style={styles.userData}>{this.state.userData.userName}</Text>
-            <Text style={styles.label}>Biografía:</Text>
+          
             <Text style={styles.userData}>{this.state.userData.bio}</Text>
-            <Text style={styles.label}>Foto de perfil:</Text>
+           
             <Text style={styles.userData}>{this.state.userData.fotoPerfil}</Text>
-            <Text style={styles.label}>Posteos:</Text>
+            
             <Text style={styles.userData}>{this.state.arrayPosteos.length}</Text>
           </View>
         ) : null}

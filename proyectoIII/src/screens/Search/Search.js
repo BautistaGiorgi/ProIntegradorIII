@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import { TextInput, View, Text, FlatList, TouchableOpacity, StyleSheet } from 'react-native';
+import { TextInput, View, Text, FlatList, TouchableOpacity, StyleSheet, Image } from 'react-native';
 import { auth, db } from '../../firebase/config';
+import { FontAwesome } from '@expo/vector-icons';
 
 class Search extends Component {
   constructor(props) {
@@ -38,20 +39,26 @@ class Search extends Component {
 
     return (
       <View style={styles.formContainer}>
-        <TextInput
-          placeholder='Buscar usuario'
-          keyboardType='default'
-          value={this.state.search}
-          style={styles.input}
-          onChangeText={(text) => this.setState({search: text})}
-        />
+        <Image 
+                style={styles.image} 
+                source={require('../../../assets/albas.png')}
+                resizeMode='contain'/> 
+          <TextInput
+            placeholder='Buscar usuario'
+            keyboardType='default'
+            value={this.state.search}
+            style={styles.input}
+            onChangeText={(text) => this.setState({search: text})}
+          />
 
         {<FlatList
           data={filteredResults}
           keyExtractor={(user) => user.id}
           renderItem={({item}) => (
             <TouchableOpacity onPress={() => this.handleUserSelect(item.data.owner)}>
+              <Text>{item.data.image}</Text>
               <Text>{item.data.userName}</Text>
+              <Text>{item.data.email}</Text>
             </TouchableOpacity>
           )}
         />}
@@ -75,7 +82,12 @@ const styles = StyleSheet.create({
         borderColor: '#ccc',
         borderStyle: 'solid',
         borderRadius: 6,
-        marginVertical:10,
+        marginTop: 30,
+        marginBottom: 30,
+    },
+    image: {
+      height: 60,
+      marginTop: 10
   },
 });
 
