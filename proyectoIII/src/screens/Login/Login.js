@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { auth } from '../../firebase/config';
-import { TextInput, TouchableOpacity, View, Text, StyleSheet } from 'react-native';
+import { TextInput, TouchableOpacity, View, Text, StyleSheet, ActivityIndicator } from 'react-native';
 
 class Login extends Component {
     constructor() {
@@ -9,6 +9,7 @@ class Login extends Component {
             email: '',
             password: '',
             textError: '',
+            logueado: false,
             rememberMe: false
         }
     }
@@ -17,6 +18,9 @@ class Login extends Component {
             if (user) {
                 this.props.navigation.navigate('Menu')
             }
+            this.setState({
+                logueado: true
+              })
         })
     }
 
@@ -29,12 +33,12 @@ class Login extends Component {
             .catch((error) => {
                 if (error.code == 'auth/internal-error') {
                     this.setState({
-                      textError: 'Verifica tu email o contraseña'
+                      textError: 'Verifica tu contraseña'
                     })
                   }
                   else {
                   this.setState({
-                    textError: error.message
+                    textError: 'Verifica tu email'
                 })}
                 console.log(error);
             })
@@ -45,7 +49,11 @@ class Login extends Component {
     render() {
         return (
             <View style={styles.formContainer}>
+                {this.state.logueado == true 
+                 
+                ?
 
+                <>
                 <Text style={styles.title}>Inicia sesión</Text>
 
                 {/* Email */}
@@ -66,16 +74,6 @@ class Login extends Component {
                     secureTextEntry={true}
                     value={this.state.password}
                 />
-
-                {/* Remember Me Checkbox */}
-                <View style={styles.checkboxContainer}>
-                    <TouchableOpacity
-                        style={this.state.rememberMe ? styles.checkboxChecked : styles.checkboxUnchecked}
-                        onPress={this.toggleRememberMe}>
-                        {this.state.rememberMe && <Text style={styles.checkmark}>✓</Text>}
-                    </TouchableOpacity>
-                    <Text style={styles.checkboxLabel}>Recordarme</Text>
-                </View>
 
                 {this.state.email.length > 0 && this.state.password.length > 0
 
@@ -106,6 +104,15 @@ class Login extends Component {
                 <TouchableOpacity onPress={() => this.props.navigation.navigate('Register')}>
                     <Text style={styles.register}>¿Todavía no tienes una cuenta? Registrate</Text>
                 </TouchableOpacity>
+                </>
+                 
+            :
+                    <View style={styles.loader}>
+                        <ActivityIndicator size='large' color='pink' />
+                    </View>
+                
+                }
+                
             </View>
         )
     }
@@ -124,7 +131,6 @@ const styles = StyleSheet.create({
         color: 'rgb(135, 90, 97)',
         display: 'flex',
         justifyContent: 'center',
-        fontFamily: 'Nunito',
         marginBottom: 15,
         marginTop: 20,
         padding: 25
@@ -157,23 +163,25 @@ const styles = StyleSheet.create({
     textButton: {
         textAlign: 'center',
         fontSize: 20,
-        color: 'rgb(94, 63, 67)',
-        fontFamily: 'Nunito'
+        color: 'rgb(94, 63, 67)'
     },
     error: {
         color: 'rgb(209, 0, 0)',
         fontSize: 15,
         display: 'flex',
         justifyContent: 'center',
-        fontFamily: 'Nunito',
         marginBottom: 20
     },
     register: {
         color: 'rgb(71, 68, 68)',
         fontSize: 17,
         display: 'flex',
-        justifyContent: 'center',
-        fontFamily: 'Nunito'
+        justifyContent: 'center'
+    },
+    loader: {
+        flex: 1,
+        justifyContent: 'center', 
+        alignItems: 'center'
     }
 
 

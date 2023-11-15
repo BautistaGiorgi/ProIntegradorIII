@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { TextInput, View, Text, FlatList, TouchableOpacity, StyleSheet, Image } from 'react-native';
 import { auth, db } from '../../firebase/config';
-import { FontAwesome } from '@expo/vector-icons';
 
 class Search extends Component {
   constructor(props) {
@@ -14,7 +13,7 @@ class Search extends Component {
   }
 
   componentDidMount() {
-    this.unsubscribe = db.collection('user').onSnapshot((snapshot) => {
+      db.collection('user').onSnapshot((snapshot) => {
       let array = [];
       snapshot.forEach((doc) => {
         array.push({
@@ -29,7 +28,7 @@ class Search extends Component {
   }
 
   handleUserSelect(id) {
-    this.props.navigation.navigate('ProfileUsers', id);
+    this.props.navigation.navigate('Profile', id);
   }
 
   render() {
@@ -42,26 +41,46 @@ class Search extends Component {
         <Image 
                 style={styles.image} 
                 source={require('../../../assets/albas.png')}
-                resizeMode='contain'/> 
-          <TextInput
-            placeholder='Buscar usuario'
-            keyboardType='default'
-            value={this.state.search}
-            style={styles.input}
-            onChangeText={(text) => this.setState({search: text})}
-          />
+                resizeMode='contain'
+        /> 
 
-        {<FlatList
+        <TextInput
+          placeholder='Buscar usuario'
+          keyboardType='default'
+          value={this.state.search}
+          style={styles.input}
+          onChangeText={(text) => this.setState({search: text})}
+        />
+
+        <FlatList
+        style={styles.container}
           data={filteredResults}
           keyExtractor={(user) => user.id}
           renderItem={({item}) => (
-            <TouchableOpacity onPress={() => this.handleUserSelect(item.data.owner)}>
-              <Text>{item.data.image}</Text>
+            <TouchableOpacity style={styles.containerProfile} onPress={() => this.handleUserSelect(item.data.owner)}>
+              {item.data.profilePicture != '' 
+              
+              ?
+                <Image 
+                    style={styles.profilePicture} 
+                    source={{uri:item.data.profilePicture}}
+                    resizeMode='contain'/>
+                        
+              :
+                <Image 
+                style={styles.profilePicture} 
+                source={{uri:'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png'}}
+                resizeMode='contain'/> 
+              
+              }
+
+            <View>
               <Text>{item.data.userName}</Text>
-              <Text>{item.data.email}</Text>
+              <Text style={styles.email}>{item.data.owner}</Text>
+            </View>
             </TouchableOpacity>
           )}
-        />}
+        />
       </View>
     );
   }
@@ -85,10 +104,23 @@ const styles = StyleSheet.create({
         marginTop: 30,
         marginBottom: 30,
     },
-    image: {
-      height: 60,
-      marginTop: 10
+    containerProfile: {
+      flexDirection: 'row',
+      height:50
+    },
+    profilePicture:{
+      height:40,
+      width:40,
+      borderWidth:1,
+      borderRadius:25,
+      borderColor:'rgb(240, 228, 228)',
+      marginRight:10
   },
+    email: {
+      color:'grey',
+     
+    },
+  
 });
 
 export default Search;

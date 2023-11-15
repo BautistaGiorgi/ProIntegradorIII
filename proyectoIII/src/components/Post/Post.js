@@ -55,15 +55,18 @@ class Post extends Component {
         return(
             <View style={styles.formContainer}>
                 {/* Perfil del usuario */}
-                <TouchableOpacity onPress={() => this.props.navigation.navigate('ProfileUsers', this.props.dataPost.data.owner)} style={styles.container}>
-                    <Image source={{uri:'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png'}} resizeMode='contain'/> 
+            
+                <TouchableOpacity onPress={() => this.props.navigation.navigate('Profile', this.props.dataPost.data.owner)} style={styles.profileContainer}>
+                    <Image style={styles.profilePicture}  source={{uri:'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png'}} resizeMode='contain'/> 
                     <Text style={styles.userName}>{this.props.dataPost.data.userName}</Text>
                 </TouchableOpacity>
                 
-                {/* Post */}
+                
+                {/* Foto */}
+
                 <Image style={styles.camera} source={{uri:this.props.dataPost.data.image}}/>
-                <Text style={styles.description}>{this.props.dataPost.data.userName} {this.props.dataPost.data.post}</Text>
-              
+
+                <View>
                 {/* Likes */}
                 {this.state.like 
                 
@@ -84,8 +87,18 @@ class Post extends Component {
                         <Text style={styles.textButton}>{this.props.dataPost.data.likes.length}</Text>
                     </View>
                 </TouchableOpacity>
-
+                
                 }
+                </View>
+
+                {/* Descripcion */}
+                <View style={styles.description}>
+                    <TouchableOpacity
+                        onPress={ ()=> this.props.navigation.navigate('Profile', this.props.dataPost.data.owner)}>
+                        <Text style={styles.nameDescription}>{this.props.dataPost.data.userName} </Text>
+                    </TouchableOpacity>
+                        <Text >{this.props.dataPost.data.post}</Text>
+                </View>
             </View>
         )
     }
@@ -94,35 +107,25 @@ class Post extends Component {
 const styles = StyleSheet.create({
     formContainer:{
         backgroundColor: 'rgb(240, 228, 228)',
-        flex: 1, 
-    },
-    input:{
-        color: '#666666',
-        height: 35,
-        paddingVertical: 20,
-        paddingHorizontal: 15,
-        borderWidth: 1,
-        borderColor: '#ccc',
-        borderStyle: 'solid',
-        borderRadius: 6,
-        marginVertical:10,
+        height: 500
     },
     userName:{
-        fontSize: 20,
+        fontSize: 18,
         color: 'rgb(94, 63, 67)',
-        fontFamily: 'Nunito',
+        paddingTop: 10,
+        paddingLeft: 6,
     },
     button:{
         backgroundColor:'#d7bebe',
         paddingHorizontal: 10,
         paddingVertical: 6,
-        marginTop: 20,
-        marginBottom: 20,
+        marginTop: 5,
+        marginBottom: 8,
         borderRadius: 4,
         borderWidth:1,
         borderStyle: 'solid',
         borderColor: '#d7bebe',
-        height: 35,
+        height: 28,
         width: 62,
         display: 'flex',
         justifyContent: 'center'
@@ -131,7 +134,6 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         fontSize: 18,
         color: 'rgb(94, 63, 67)',
-        fontFamily: 'Nunito',
         marginLeft: 10
     },
     iconContainer: {
@@ -140,15 +142,39 @@ const styles = StyleSheet.create({
     },
     description:{
         fontSize: 14,
+        flex:1,
+        flexDirection:'row',
+        justifyContent: 'left',
+        marginBottom:20,
         color: 'gray',
-        fontFamily: 'Nunito',
     },
     camera: {
-        width: "200",
-        height: '200%',
-        marginTop: 20,
-        marginBottom:20
+        width: '100vw',
+        height: 350,
+        marginTop: 10,
+        marginBottom:10
     },
+    profilePicture: {
+        height: 40,
+        width: 40,
+        borderWidth: 1,
+        borderRadius: 25,
+        borderColor: 'rgb(240, 228, 228)',
+        marginRight: 10
+    },
+    profileContainer: {
+        flex:1,
+        flexDirection: 'row',
+        height: 50,
+        width: '100',
+        justifyContent:'left',
+        marginLeft: 5,
+        marginTop: 15,
+        marginBottom: 35,
+    },
+    nameDescription: {
+        fontWeight: 'bold'
+    }
 })
 
 export default Post;

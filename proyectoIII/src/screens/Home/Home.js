@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { TextInput, TouchableOpacity, View, Text, StyleSheet, FlatList, Image } from 'react-native';
+import { TextInput, TouchableOpacity, View, Text, StyleSheet, FlatList, Image, ActivityIndicator } from 'react-native';
 import { auth, db } from '../../firebase/config';
 import Post from '../../components/Post/Post';
 
@@ -42,7 +42,9 @@ class Home extends Component {
 
                         ?
 
-                        <ActivityIndicator size='large' color='violet' />
+                        <View style={styles.loader}>
+                            <ActivityIndicator size='large' color='pink' />
+                        </View>
 
                         :
 
@@ -67,6 +69,11 @@ const styles = StyleSheet.create({
         height: 60,
         marginTop: 10
     },
+    loader: {
+        flex: 1,
+        justifyContent: 'center', 
+        alignItems: 'center'
+    }
 })
 
 export default Home;

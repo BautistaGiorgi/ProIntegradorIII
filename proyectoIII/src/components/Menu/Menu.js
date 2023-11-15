@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Entypo } from '@expo/vector-icons'; 
 import { Octicons } from '@expo/vector-icons';
 import { Ionicons } from '@expo/vector-icons'; 
@@ -27,7 +27,7 @@ class Menu extends Component {
             <Tab.Screen 
               name='Home' 
               component={Home} 
-              options={{tabBarIcon: () => <Entypo name='home' size={24} color="black"/>,
+              options={{tabBarIcon: () => <Entypo name='home' size={24} color='black'/>,
               headerShown: false
             }} 
              
@@ -36,21 +36,21 @@ class Menu extends Component {
             <Tab.Screen
              name='PostForm'
              component={PostForm} 
-             options={{tabBarIcon: () => <Octicons name='diff-added' size={24} color="black"/>,
+             options={{tabBarIcon: () => <Octicons name='diff-added' size={24} color='black'/>,
              headerShown: false}} 
             />
 
             <Tab.Screen 
               name='Search' 
               component={Search} 
-              options={{tabBarIcon: () => <FontAwesome name='search' size={24} color="black"/>,
+              options={{tabBarIcon: () => <FontAwesome name='search' size={24} color='black'/>,
               headerShown: false}}
             />
 
             <Tab.Screen 
               name='Profile'
               component={Profile}  
-              options={{tabBarIcon: () => <Ionicons name='person' size={24} color="black"/>,
+              options={{tabBarIcon: () => <Ionicons name='person' size={24} color='black'/>,
               headerShown: false}}
             />
         </Tab.Navigator>

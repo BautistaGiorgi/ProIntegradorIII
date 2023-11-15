@@ -16,7 +16,7 @@ class PostForm extends Component {
     }
     
     componentDidMount(){
-        db.collection('user').where("owner", "==", auth.currentUser.email).onSnapshot(
+        db.collection('user').where('owner', '==', auth.currentUser.email).onSnapshot(
           data => {
             let info = [];
             data.forEach(i => {
@@ -108,7 +108,6 @@ const styles = StyleSheet.create({
         color: 'rgb(135, 90, 97)',
         display: 'flex',
         justifyContent: 'center',
-        fontFamily: 'Nunito',
         marginBottom: 15,
         marginTop: 20,
         padding: 25
@@ -142,7 +141,6 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         fontSize: 20,
         color: 'rgb(94, 63, 67)',
-        fontFamily: 'Nunito'
     },
     image: {
         height: 60,

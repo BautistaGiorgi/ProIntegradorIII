@@ -14,9 +14,17 @@ export default class Profile extends Component {
 
   logOut() {
     auth.signOut()
-    .then(() => {
-      this.props.navigation.navigate("Login")
-    })
+    this.props.navigation.navigate('Login')
+  }
+
+  deletePost(id) {
+    db.collection('posts').doc(id).delete()
+      .then(() => {
+        console.log('Post eliminado correctamente')
+      })
+      .catch((error) => {
+        console.log(error)
+      })
   }
 
   render() {
@@ -30,7 +38,7 @@ export default class Profile extends Component {
         <FormProfile userEmail={auth.currentUser.email} navigation={this.props.navigation} />
         
         <TouchableOpacity style={styles.button} onPress={() => this.logOut()}>
-          <Text style={styles.textButton}>Logout</Text>
+          <Text style={styles.textButton}>Cerrar sesión</Text>
         </TouchableOpacity>
       </View>
     )
@@ -42,6 +50,7 @@ const styles = StyleSheet.create({
         backgroundColor: 'rgb(240, 228, 228)',
         paddingHorizontal:10,
         flex: 1,  
+        height: 500
   },
   title: {
       fontSize: 40,
@@ -49,7 +58,6 @@ const styles = StyleSheet.create({
       color: 'rgb(135, 90, 97)',
       display: 'flex',
       justifyContent: 'center',
-      fontFamily: 'Nunito',
       marginBottom: 15,
       marginTop: 20,
       padding: 25
@@ -72,11 +80,10 @@ const styles = StyleSheet.create({
       textAlign: 'center',
       fontSize: 20,
       color: 'rgb(94, 63, 67)',
-      fontFamily: 'Nunito'
   },
   image: {
       height: 60,
       marginTop: 10
-  },
+  }
   
 });

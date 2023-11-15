@@ -1,81 +1,108 @@
 import React, { Component } from 'react';
-import { Text, View, TouchableOpacity, StyleSheet, FlatList } from 'react-native';
-import { db } from '../../firebase/config';
+import { Text, View, TouchableOpacity, StyleSheet, FlatList, ActivityIndicator, Image } from 'react-native';
+import { auth, db } from '../../firebase/config';
+import { FontAwesome } from '@expo/vector-icons';   
 
 class FormProfile extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            arrayPosteos: [],
-            userData: null
+            arrayPosts: [],
+            arrayData: []
         }
     }
 
     componentDidMount() {
-        console.log(this.props.userEmail)
-        this.getUserData(this.props.userEmail)
-        this.getPosteos(this.props.userEmail)
-    }
-    
-    getUserData(userEmail) {
-        db.collection("user").onSnapshot((querySnapshot) => {
-            querySnapshot.forEach((doc) => {
-                if (doc.data().owner == userEmail) {
-                    this.setState({
-                        userData: doc.data()
-                    })
-                }
-            });
-        });
-    }
-
-    getPosteos(userEmail) {
-        db.collection("posts").onSnapshot((querySnapshot) => {
-            const arrayPosteos = []
-            querySnapshot.forEach((doc) => {
-                if (doc.data().userEmail == userEmail) {
-                    arrayPosteos.push({
-                        data: doc.data(),
-                        uid: doc.id
-                    })
-                }
-            });
-            this.setState({
-                arrayPosteos: arrayPosteos
-            })
-        });
+      db.collection('user')
+      .where('owner', '==', auth.currentUser.email)
+      .onSnapshot(
+        (data) => {
+          let info = [];
+          data.forEach((i) => {info.push({
+                id: i.id,
+                user: i.data()
+              })
+          })
+          this.setState({
+            arrayData: info
+          }, ()=> console.log(this.state.arrayData))
+        }
+      )
+  
+      
+      db.collection('posts')
+      .where('owner', '==', auth.currentUser.email)
+      .onSnapshot(
+        (data) => {
+          let info = [];
+          data.forEach((i) => {info.push(
+              {
+                id: i.id,
+                user: i.data()
+              })
+          })
+          this.setState({
+            arrayPosts: info
+          }, ()=> console.log(this.state.arrayPosts))
+        }
+      )
     }
    
   render() {
     return (
-      <View style={styles.container}>
-        <View>
-          
-         
-        </View>
-        <Text style={styles.userData}>{this.props.userEmail}</Text>
+      <View style={styles.formContainer}>
 
-        {this.state.userData ? (
+        {this.state.arrayData.length > 0 
+        
+        ? 
+        <>
           <View style={styles.userInfoContainer}>
+            <Image style={styles.profilePicture} source={{uri:this.state.arrayData[0].user.profilePicture}} resizeMode='contain'/>
+            <View> 
+              <Text style={styles.arrayData}>{this.state.arrayData[0].user.owner}</Text>
+              <Text style={styles.arrayData}>{this.state.arrayData[0].user.userName}</Text>
 
-            <Text style={styles.userData}>{this.state.userData.userName}</Text>
-          
-            <Text style={styles.userData}>{this.state.userData.bio}</Text>
-           
-            <Text style={styles.userData}>{this.state.userData.fotoPerfil}</Text>
-            
-            <Text style={styles.userData}>{this.state.arrayPosteos.length}</Text>
+              {this.state.arrayData[0].user.miniBio.length > 0 ? <Text>{this.state.arrayData[0].user.miniBio}</Text> : false}
+              {this.state.arrayPosts.length == 0 ? <Text style={styles.arrayData}>{this.state.arrayPosts.length} posts</Text> : <Text style={styles.arrayData}> {this.state.arrayPosts.length} post</Text>}
+            </View>
           </View>
-        ) : null}
+
+          <View style={styles.posts}>
+          {<FlatList
+              data={this.state.arrayPosts}
+              keyExtractor={(i) => i.id}
+              renderItem={({item}) => {
+                return (
+                  <View style={styles.containerPost}>
+                    <Image style={styles.camera} source={{uri:item.user.image}} />
+                    <TouchableOpacity style={styles.deleteButton} onPress={() => this.deletePost(item.id)}>
+                      <Text style={styles.deleteText}>Borrar post</Text>
+                    </TouchableOpacity>
+                  </View>)
+              }}
+              />}
+
+          </View>
+        
+        </>
+        
+        : 
+        
+          <View style={styles.loader}>
+            <ActivityIndicator size='large' color='pink' />
+          </View>
+        
+        }
+
       </View>
     );
   }
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 20,
+  formContainer: {
+    backgroundColor: 'rgb(240, 228, 228)',
+    height: 500
   },
   userInfoContainer: {
     marginBottom: 20,
@@ -85,14 +112,33 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
   },
-  userData: {
+  arrayData: {
     fontSize: 16,
     marginBottom: 10,
     fontWeight: '400',
   },
   postContainer: {
     marginBottom: 20,
-  },
+  }, 
+  camera: {
+    width: '100vw',
+    height: 350,
+    marginTop: 10,
+    marginBottom:10
+},
+profilePicture: {
+  height: 40,
+  width: 40,
+  borderWidth: 1,
+  borderRadius: 25,
+  borderColor: 'rgb(240, 228, 228)',
+  marginRight: 10
+},
+  loader: {
+    flex: 1,
+    justifyContent: 'center', 
+    alignItems: 'center'
+  }
 });
 
 export default FormProfile;
