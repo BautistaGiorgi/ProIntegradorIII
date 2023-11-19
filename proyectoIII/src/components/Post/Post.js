@@ -1,19 +1,21 @@
 import React, { Component } from 'react';
-import { Text, View, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import { Text, View, StyleSheet, TouchableOpacity, Image, TextInput } from 'react-native';
 import { db, auth } from '../../firebase/config';
 import firebase from 'firebase';
 import { FontAwesome } from '@expo/vector-icons';
+import { Feather } from '@expo/vector-icons'; 
 
 class Post extends Component {
     constructor(props){
         super(props)
         this.state = {
-            like: false
+            like: false,
+            comment: ''
         }
     }
     
     componentDidMount(){
-        let  likes = this.props.dataPost.data.likes.length
+        let likes = this.props.dataPost.data.likes
 
         if(likes.length == 0){
             this.setState({
@@ -21,7 +23,7 @@ class Post extends Component {
             })
         }
         if(likes.length > 0){
-            likes.forEach(like => {if (like === auth.currentUser.email) {
+            likes.forEach((like) => {if (like === auth.currentUser.email) {
                 this.setState({
                     like: true 
                 })
@@ -34,8 +36,7 @@ class Post extends Component {
             likes:firebase.firestore.FieldValue.arrayUnion(auth.currentUser.email)
         })
         .then(this.setState({
-            like: true,
-            likes: this.props.dataPost.data.likes.length
+            like: true
         }))
         .catch(error => console.log(error))
     }
@@ -45,17 +46,23 @@ class Post extends Component {
             likes:firebase.firestore.FieldValue.arrayRemove(auth.currentUser.email)
         })
         .then(this.setState({
-            like: false,
-            likes: this.props.dataPost.data.likes.length
+            like: false
         }))
         .catch(error => console.log(error))
     }
+
+    comment(text) {
+        db.collection('posts').doc(this.props.dataPost.id).update({
+            comments: firebase.firestore.FieldValue.arrayUnion(text)
+        })
+        .then(this.setState({comment: ''}))
+    }
+    
 
     render(){
         return(
             <View style={styles.formContainer}>
                 {/* Perfil del usuario */}
-            
                 <TouchableOpacity onPress={() => this.props.navigation.navigate('Profile', this.props.dataPost.data.owner)} style={styles.profileContainer}>
                     <Image style={styles.profilePicture}  source={{uri:'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png'}} resizeMode='contain'/> 
                     <Text style={styles.userName}>{this.props.dataPost.data.userName}</Text>
@@ -63,11 +70,10 @@ class Post extends Component {
                 
                 
                 {/* Foto */}
-
                 <Image style={styles.camera} source={{uri:this.props.dataPost.data.image}}/>
 
-                <View>
                 {/* Likes */}
+                <View>
                 {this.state.like 
                 
                 ? 
@@ -89,6 +95,7 @@ class Post extends Component {
                 </TouchableOpacity>
                 
                 }
+
                 </View>
 
                 {/* Descripcion */}
@@ -99,6 +106,33 @@ class Post extends Component {
                     </TouchableOpacity>
                         <Text >{this.props.dataPost.data.post}</Text>
                 </View>
+
+                {/* Comments */}
+                <TouchableOpacity style={styles.commentCount}
+                    onPress={() => this.props.navigation.navigate('Comments', this.props.dataPost.data.image)}>
+                    {this.props.dataPost.data.comments.length == 1
+                     
+                    ? 
+                        <Text style={styles.text}> {this.props.dataPost.data.comments.length} comment</Text>
+                    
+                    :
+
+                        <Text style={styles.text}> {this.props.dataPost.data.comments.length} comments</Text>
+                    }  
+                </TouchableOpacity>
+               
+                <View style={styles.containerComment}>
+                    <TextInput
+                            onChangeText={(text) => this.setState({comment: text})}
+                            placeholder= 'Añade un comentario'
+                            keyboardType='default'
+                            value={this.state.comment}
+                            style={styles.input}
+                        />
+                    <TouchableOpacity onPress={() => this.comment(this.state.comment)}>
+                    <Feather name="send" size={19} color="black" />
+                    </TouchableOpacity> 
+                </View>   
             </View>
         )
     }
@@ -107,20 +141,21 @@ class Post extends Component {
 const styles = StyleSheet.create({
     formContainer:{
         backgroundColor: 'rgb(240, 228, 228)',
-        height: 500
+        height: 600
     },
     userName:{
         fontSize: 18,
         color: 'rgb(94, 63, 67)',
-        paddingTop: 10,
-        paddingLeft: 6,
+        marginTop: 10,
+        marginLeft: 6,
     },
     button:{
         backgroundColor:'#d7bebe',
         paddingHorizontal: 10,
         paddingVertical: 6,
-        marginTop: 5,
+        marginTop: 3,
         marginBottom: 8,
+        marginLeft: 8,
         borderRadius: 4,
         borderWidth:1,
         borderStyle: 'solid',
@@ -132,7 +167,7 @@ const styles = StyleSheet.create({
     },
     textButton:{
         textAlign: 'center',
-        fontSize: 18,
+        fontSize: 16,
         color: 'rgb(94, 63, 67)',
         marginLeft: 10
     },
@@ -142,14 +177,14 @@ const styles = StyleSheet.create({
     },
     description:{
         fontSize: 14,
-        flex:1,
         flexDirection:'row',
         justifyContent: 'left',
-        marginBottom:20,
-        color: 'gray',
+        marginBottom: 8,
+        marginLeft: 8,
+        color: 'gray'
     },
     camera: {
-        width: '100vw',
+        width: '100%',
         height: 350,
         marginTop: 10,
         marginBottom:10
@@ -163,17 +198,42 @@ const styles = StyleSheet.create({
         marginRight: 10
     },
     profileContainer: {
-        flex:1,
         flexDirection: 'row',
-        height: 50,
         width: '100',
         justifyContent:'left',
-        marginLeft: 5,
+        marginLeft: 8,
         marginTop: 15,
-        marginBottom: 35,
+        marginBottom: 2,
     },
     nameDescription: {
-        fontWeight: 'bold'
+        fontWeight: 'bold',
+        marginBottom: 0
+    },
+    commentCount: {
+        flexDirection:'row',
+        marginTop: 2,
+        marginBottom: 5,
+        justifyContent: 'left'
+    },
+    text: {
+        marginLeft: 6
+    },
+    containerComment: {
+        flexDirection: "row",
+        alignItems: 'center',
+        width: '100%',
+        flex: 1,
+        marginLeft: 8
+    },
+    input: {
+        color: '#666666',
+        height: 32,
+        paddingVertical: 20,
+        paddingHorizontal: 15,
+        borderWidth: 1,
+        borderColor: '#ccc',
+        borderStyle: 'solid',
+        borderRadius: 6,
     }
 })
 

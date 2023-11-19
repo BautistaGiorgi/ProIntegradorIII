@@ -62,7 +62,6 @@ class Home extends Component {
 const styles = StyleSheet.create({
     formContainer: {
         backgroundColor: 'rgb(240, 228, 228)',
-        paddingHorizontal: 10,
         flex: 1,
     },
     image: {
