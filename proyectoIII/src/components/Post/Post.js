@@ -10,7 +10,9 @@ class Post extends Component {
         super(props)
         this.state = {
             like: false,
-            comment: ''
+            commentText: "",
+            comment: [],
+            showComment: false,        
         }
     }
     
@@ -51,12 +53,20 @@ class Post extends Component {
         .catch(error => console.log(error))
     }
 
-    comment(text) {
-        db.collection('posts').doc(this.props.dataPost.id).update({
-            comments: firebase.firestore.FieldValue.arrayUnion(text)
-        })
-        .then(this.setState({comment: ''}))
-    }
+    comment(comment) {
+        let theUser = this.props.dataPost.data.owner;
+        
+        let newComment = {
+          user: theUser,
+          comment: comment,
+        };
+ 
+        let post = db.collection("posts").doc(this.props.dataPost.id);
+  
+        post.update({
+          comment: firebase.firestore.FieldValue.arrayUnion(newComment),
+        });
+      }
     
 
     render(){
@@ -108,6 +118,14 @@ class Post extends Component {
                 </View>
 
                 {/* Comments */}
+
+
+
+
+
+
+
+                
                 <TouchableOpacity style={styles.commentCount}
                     onPress={() => this.props.navigation.navigate('Comments', this.props.dataPost.data.image)}>
                     {this.props.dataPost.data.comments.length == 1
@@ -123,16 +141,37 @@ class Post extends Component {
                
                 <View style={styles.containerComment}>
                     <TextInput
-                            onChangeText={(text) => this.setState({comment: text})}
+                            onChangeText={(text) => this.setState({commentText: text})}
                             placeholder= 'Añade un comentario'
                             keyboardType='default'
-                            value={this.state.comment}
+                            value={this.state.commentText}
                             style={styles.input}
                         />
-                    <TouchableOpacity onPress={() => this.comment(this.state.comment)}>
+                    <TouchableOpacity onPress={() => this.comment(this.state.commentText)}>
                     <Feather name="send" size={19} color="black" />
                     </TouchableOpacity> 
-                </View>   
+                </View>
+                <TouchableOpacity onPress={() => this.setState({ showComment: !this.state.showComment })}>
+                <Text>
+                    {this.state.showComment ? 'Ocultar Comentarios' : 'Mostrar Comentarios'}
+                </Text>
+                </TouchableOpacity>
+                {this.state.showComment === true ?
+                    <FlatList
+                        data={this.props.dataPost.data.comments}
+                        keyExtractor={(ok) => ok.id}
+                        renderItem={({ item }) => (
+                        <TouchableOpacity>
+                            <View>
+                            <Text><Text>{item.userName}</Text>: {item.comment}</Text>
+                            </View>
+                </TouchableOpacity>
+            )}
+          />
+          :
+          <Text></Text>
+        }
+
             </View>
         )
     }
