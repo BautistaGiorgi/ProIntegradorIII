@@ -27,8 +27,10 @@ class Search extends Component {
     })
   }
 
-  handleUserSelect(id) {
-    this.props.navigation.navigate('Profile', id);
+  handleUserSelect(selectedUser) {
+    selectedUser === auth.currentUser.email
+      ? this.props.navigation.navigate('Profile')
+      : this.props.navigation.navigate('ProfileUsers', { owner: selectedUser });
   }
 
   render() {
