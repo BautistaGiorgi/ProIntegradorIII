@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Text, View, StyleSheet, TouchableOpacity, Image, TextInput } from 'react-native';
+import { Text, View, StyleSheet, TouchableOpacity, Image, TextInput, FlatList } from 'react-native';
 import { db, auth } from '../../firebase/config';
 import firebase from 'firebase';
 import { FontAwesome } from '@expo/vector-icons';
@@ -56,7 +56,7 @@ class Post extends Component {
     }
 
     comment(comment) {
-        let theUser = this.props.dataPost.data.owner;
+        let theUser = auth.currentUser.email;
 
         let newComment = {
             user: theUser,
@@ -66,12 +66,19 @@ class Post extends Component {
         let post = db.collection("posts").doc(this.props.dataPost.id);
 
         post.update({
-            comment: firebase.firestore.FieldValue.arrayUnion(newComment),
+            comments: firebase.firestore.FieldValue.arrayUnion(newComment),
         });
+        this.setState({
+            commentText:'',
+        })
     }
 
 
     render() {
+
+        console.log(this.props.dataPost.data.profilePicture);
+        console.log('-------');
+        console.log(this.props.dataPost.data);
         return (
             <View style={styles.formContainer}>
                 {/* Perfil del usuario */}
@@ -80,12 +87,11 @@ class Post extends Component {
                         if (this.props.dataPost.data.owner === auth.currentUser.email) {
                             this.props.navigation.navigate('Profile');
                         } else {
-                            this.props.navigation.navigate('ProfileUsers', { owner: this.props.dataPost.data.owner });
+                            this.props.navigation.navigate('ProfileUsers', this.props.dataPost.data.owner);
                         }
                     }}
                     style={styles.profileContainer}
                 >
-                    <Image style={styles.profilePicture} source={{ uri: 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png' }} resizeMode='contain' />
                     <Text style={styles.userName}>{this.props.dataPost.data.userName}</Text>
                 </TouchableOpacity>
 
@@ -121,24 +127,25 @@ class Post extends Component {
 
                 {/* Descripcion */}
                 <View style={styles.description}>
-                    <TouchableOpacity
-                        onPress={() => {
-                            if (this.props.dataPost.data.owner === auth.currentUser.email) {
-                                this.props.navigation.navigate('Profile');
-                            } else {
-                                this.props.navigation.navigate('ProfileUsers', { owner: this.props.dataPost.data.owner });
-                            }
-                        }}
-                        style={styles.profileContainer}
-                    >
-                        <Text style={styles.nameDescription}>{this.props.dataPost.data.userName} </Text>
-                    </TouchableOpacity>
+                    {this.props.dataPost.data.owner != auth.currentUser.email 
+                    
+                    
+                    ?
+                        <TouchableOpacity
+                            onPress={() => this.props.navigation.navigate('ProfileUsers', this.props.dataPost.data.owner)}>
+                            <Text style={styles.nameDescription}>{this.props.dataPost.data.userName} </Text>
+                        </TouchableOpacity>
+                        
+                    :
+                        <TouchableOpacity
+                            onPress={() => this.props.navigation.navigate('Profile', this.props.dataPost.data.owner)}>
+                            <Text style={styles.nameDescription}>{this.props.dataPost.data.userName} </Text>
+                        </TouchableOpacity>
+                    }
                     <Text >{this.props.dataPost.data.post}</Text>
                 </View>
 
                 {/* Comments */}
-                <TouchableOpacity style={styles.commentCount}
-                    onPress={() => this.props.navigation.navigate('Comments', this.props.dataPost.data.image)}>
                     {this.props.dataPost.data.comments.length == 1
 
                         ?
@@ -148,8 +155,7 @@ class Post extends Component {
 
                         <Text style={styles.text}> {this.props.dataPost.data.comments.length} comments</Text>
                     }
-                </TouchableOpacity>
-
+               
                 <View style={styles.containerComment}>
                     <TextInput
                         onChangeText={(text) => this.setState({ commentText: text })}
@@ -163,8 +169,10 @@ class Post extends Component {
                     </TouchableOpacity>
                 </View>
                 <TouchableOpacity onPress={() => this.setState({ showComment: !this.state.showComment })}>
-                    <Text>
-                        {this.state.showComment ? 'Ocultar Comentarios' : 'Mostrar Comentarios'}
+                    <Text style={styles.showComment}>
+                        {this.state.showComment ? 
+                        'Ocultar Comentarios' 
+                        : 'Mostrar Comentarios'}
                     </Text>
                 </TouchableOpacity>
                 {this.state.showComment === true ?
@@ -172,9 +180,10 @@ class Post extends Component {
                         data={this.props.dataPost.data.comments}
                         keyExtractor={(ok) => ok.id}
                         renderItem={({ item }) => (
+
                             <TouchableOpacity>
                                 <View>
-                                    <Text><Text>{item.userName}</Text>: {item.comment}</Text>
+                                    <Text>{item.user}: {item.comment}</Text>
                                 </View>
                             </TouchableOpacity>
                         )}
@@ -189,11 +198,15 @@ class Post extends Component {
 }
 
 const styles = StyleSheet.create({
+    showComment:{
+        marginLeft: 8,
+    },
     formContainer: {
         backgroundColor: 'rgb(240, 228, 228)',
         height: 600
     },
     userName: {
+        fontWeight:'bold',
         fontSize: 18,
         color: 'rgb(94, 63, 67)',
         marginTop: 10,
@@ -226,10 +239,10 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     description: {
+        
         fontSize: 14,
         flexDirection: 'row',
         justifyContent: 'left',
-        marginBottom: 8,
         marginLeft: 8,
         color: 'gray'
     },
@@ -257,7 +270,8 @@ const styles = StyleSheet.create({
     },
     nameDescription: {
         fontWeight: 'bold',
-        marginBottom: 0
+        marginBottom: 0,
+        marginRight: 3
     },
     commentCount: {
         flexDirection: 'row',

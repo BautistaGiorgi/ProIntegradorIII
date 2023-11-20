@@ -122,6 +122,11 @@ const styles = StyleSheet.create({
       color:'grey',
      
     },
+    loader: {
+      flex: 1,
+      justifyContent: 'center', 
+      alignItems: 'center'
+  }
   
 });
 

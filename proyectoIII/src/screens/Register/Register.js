@@ -109,7 +109,7 @@ class Register extends Component {
                         {/* Profile picture */}
                         <TextInput
                         style={styles.input}
-                        onChangeText={(url)=>this.setState({profilePic: url})}
+                        onChangeText={(url)=>this.setState({profilePicture: url})}
                         placeholder='Añade la URL de tu imagen'
                         keyboardType='default'
                         value={this.state.profilePicture}

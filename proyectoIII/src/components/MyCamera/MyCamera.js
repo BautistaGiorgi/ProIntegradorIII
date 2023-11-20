@@ -72,7 +72,7 @@ class MyCamera extends Component{
                     <View style={styles.formContainer}>
                         <Camera style={styles.camera} type={Camera.Constants.Type.front} ref={metodosCamara => this.metodosCamara = metodosCamara}/>
                         <TouchableOpacity style={styles.button} onPress={() => this.takePicture()}>
-                            <Text style={styles.textButton}>Take Picture</Text>
+                            <Text style={styles.textButton}>Sacar foto</Text>
                         </TouchableOpacity>
                     </View>
                
@@ -82,10 +82,10 @@ class MyCamera extends Component{
                         <Image style={styles.camera} source={{uri: this.state.image}}/>
                         <View style={styles.buttonContainer}>
                             <TouchableOpacity style={styles.buttonAceptar} onPress={() => this.acceptPicture()}>
-                                <Text style={styles.textButtonOk}>Accept</Text>
+                                <Text style={styles.textButtonOk}>Aceptar</Text>
                             </TouchableOpacity>
                             <TouchableOpacity style={styles.buttonCancelar} onPress={() => this.cancelPicture()}>
-                                <Text style={styles.textButtonOk}>Cancel</Text>
+                                <Text style={styles.textButtonOk}>Cancelar</Text>
                             </TouchableOpacity>
                         </View>
                     </View>
